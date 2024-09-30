@@ -41,10 +41,13 @@ def csv_plotting():
     # Show the plot
     plt.show()
 
-def average_temperature(temperatures):
+def gjennomsnitt_temp(temperatures):
+    n =30
+    n_len =len(temperatures)
     if not temperatures:
         return None  # Handle the case where the list is empty
-    return sum(temperatures) / len(temperatures)
+    avg = sum(temperatures) / n
+    return avg
 
 # Call the plotting function
 csv_plotting()
