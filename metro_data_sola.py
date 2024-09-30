@@ -6,7 +6,7 @@ temp = []
 date_Time = []
 lufttrykk = []
 
-def metro_data():
+def metro_data_sola():
     # Get the current working directory
     working_dir = os.getcwd()
 
@@ -77,4 +77,4 @@ def metro_data():
     return temp, date_Time, lufttrykk
 
 # Call the function
-metro_data()
+metro_data_sola()

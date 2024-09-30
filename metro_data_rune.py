@@ -8,7 +8,7 @@ pressure_barometer = []
 pressure_absolute = []
 
 
-def metro_data():
+def metro_data_rune():
     # Get the current working directory
     working_dir = os.getcwd()
     print(working_dir)
@@ -93,4 +93,4 @@ def metro_data():
 
 
 # Call the function for testing
-metro_data()  # Uncomment this line to test the function
+metro_data_rune()  # Uncomment this line to test the function
