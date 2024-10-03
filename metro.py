@@ -42,7 +42,7 @@ def plott_temp_rune(date_time, temp):
     plt.title('Temperatur', fontsize=16)
 
 # Call the plotting function
-csv_plotting()
+
 
 def rune_plotting(date_time, temp):
 
@@ -54,3 +54,4 @@ def rune_plotting(date_time, temp):
 
     # Add titles and
 
+csv_plotting()
