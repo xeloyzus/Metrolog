@@ -3,15 +3,20 @@ from datetime import datetime
 
 # Define lists to hold data
 temp = []
+avg_temp = []
+temp_fall = []
 date_time = []
 pressure_barometer = []
 pressure_absolute = []
+valid_times = []
+averaged_temps = []
 
-
-def metro_data_rune():
+def rune_metro_data():
     # Get the current working directory
     working_dir = os.getcwd()
     print(working_dir)
+
+    global temp, temp_fall, date_time, pressure_barometer, pressure_absolute,valid_times, averaged_temps
 
     try:
         # Open the CSV file manually
@@ -33,9 +38,6 @@ def metro_data_rune():
                 # Split the line using semicolon as the delimiter
                 columns = lines.split(';')
 
-                # Debugging: print the columns to see if data splits correctly
-                print(f"Columns: {columns}")
-
                 # Ensure that the line has at least 5 columns
                 if len(columns) < 5:
                     print(f"Skipping line {index} due to insufficient columns")
@@ -49,15 +51,16 @@ def metro_data_rune():
 
                 # Append the date and time, converting to datetime
                 try:
-                    # Check for different date formats
-                    if "pm" in date_time_value.lower() or "am" in date_time_value.lower():
-                        date_time_obj = datetime.strptime(date_time_value,
-                                                          '%m/%d/%Y %I:%M:%S %p')  # Format for '06/13/2021 09:53:18 pm'
+                    # Handle AM/PM time format
+                    if "am" in date_time_value.lower() or "pm" in date_time_value.lower():
+                        if "00:" in date_time_value:
+                            date_time_value = date_time_value.replace("00:", "12:")
+                        date_time_obj = datetime.strptime(date_time_value, '%m/%d/%Y %I:%M:%S %p')
                     else:
-                        date_time_obj = datetime.strptime(date_time_value,
-                                                          '%d.%m.%Y %H:%M')  # Format for '06.11.2021 14:23'
+                        date_time_obj = datetime.strptime(date_time_value, '%d.%m.%Y %H:%M')
 
-                    date_time.append(date_time_obj)
+                    date_time.append(date_time_obj)  # Append if valid
+
                 except Exception as e:
                     print(f"Skipping line {index} due to invalid date format: {date_time_value} | Error: {e}")
                     continue
@@ -76,21 +79,49 @@ def metro_data_rune():
                         temperature = float(temperature)
                         temp.append(temperature)
 
+                        # Get the temperature fall
+                        start_date = datetime(2021, 6, 11, 17, 31)
+                        end_date = datetime(2021, 6, 12, 3, 5)
+                        if date_time_obj == start_date or end_date:
+                            temp_fall = temp
+
                 except Exception as e:
                     print(f"Skipping line {index} due to invalid temperature or pressure values | Error: {e}")
                     continue
 
-        print(f"Temperature: {temp}")
-        print(f"Date-Time: {date_time}")
-        print(f"Barometer Pressure: {pressure_barometer}")
-        print(f"Absolute Pressure: {pressure_absolute}")
 
     except Exception as e:
         print(f"An error occurred: {e}")
 
     # Return the variables you're interested in
-    return temp, date_time, pressure_barometer, pressure_absolute
+    return  date_time, temp, temp_fall, pressure_barometer, pressure_absolute
 
 
-# Call the function for testing
-metro_data_rune()  # Uncomment this line to test the function
+date_time,temp, _, _ , _= rune_metro_data()
+
+# Step 2: Define the moving average function
+def moving_average(timestamps, temps, n):
+    # Loop through the temperatures, excluding the first and last n values
+    for i in range(n, len(temps) - n):
+        # Calculate the average of the current window (2n+1 values)
+        window = temps[i - n:i + n + 1]
+        window_avg = sum(window) / len(window)
+        # Round the average to two decimal places
+        window_avg = round(window_avg, 2)
+        # Append the valid timestamp and corresponding averaged temperature
+        valid_times.append(timestamps[i])
+        averaged_temps.append(window_avg)
+
+    return valid_times, averaged_temps
+
+
+def temp_date_data():
+    # Step 3: Apply the moving average with n=30 (or smaller for this example)
+    n = 30  # You can adjust this number
+    times, avgtemp = moving_average(date_time, temp, n)
+    return times, avgtemp
+
+valid_times, averaged_temps = temp_date_data()
+# Print the results
+for time, avg_temp in zip(valid_times, averaged_temps):
+    print(f"Valid Time: {time.strftime('%Y-%m-%d %H:%M')}, Averaged Temperature: {avg_temp}")
