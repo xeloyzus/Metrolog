@@ -27,8 +27,6 @@ def sola_plotting(date_time, temp):
     plt.subplot(2, 1, 1)
     plt.plot(date_time, temp, color='green', linestyle='-')  # No connecting lines, just markers
 
-    plt.xticks(rotation=45)  # Rotate for readability
-
     # Add titles and labels
     plt.title("Temperature Vs Time", fontsize=16)
     plt.xlabel("Date", fontsize=14)
