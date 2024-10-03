@@ -99,8 +99,9 @@ def rune_metro_data():
 
 date_time,temp, _, _ , _= rune_metro_data()
 
+
 # Step 2: Define the moving average function
-def moving_average(timestamps, temps, n):
+def average_temp_date(timestamps, temps, n):
     # Loop through the temperatures, excluding the first and last n values
     for i in range(n, len(temps) - n):
         # Calculate the average of the current window (2n+1 values)
@@ -118,7 +119,7 @@ def moving_average(timestamps, temps, n):
 def temp_date_data():
     # Step 3: Apply the moving average with n=30 (or smaller for this example)
     n = 30  # You can adjust this number
-    times, avgtemp = moving_average(date_time, temp, n)
+    times, avgtemp = average_temp_date(date_time, temp, n)
     return times, avgtemp
 
 valid_times, averaged_temps = temp_date_data()

@@ -1,15 +1,16 @@
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
-from rune_metro_data import rune_metro_data, temp_date_data
+from rune_metro_data import rune_metro_data, temp_date_data, date_time
 from sola_metro_data import sola_metro_data
 
 
 def csv_plotting():
     #date_time, temp, temp_fall, avg_temp, pressure_barometer, pressure_absolute = rune_metro_data()
-    date_time, temp = temp_date_data()
+    #date_time, temp = temp_date_data()
+    sola_date_time, sola_temp, _,_ = sola_metro_data()
 
-    sola_plotting(date_time, temp)
+    sola_plotting(sola_date_time, sola_temp)
 
     # Add a legend and layout
     plt.legend()
