@@ -2,25 +2,22 @@ import os
 from datetime import datetime
 from matplotlib import pyplot as plt
 
-class SolaMetroData:
-    def __init__(self, file_name):
-        # Initialize the data lists
-        self.file_name = file_name
+class SolaMetroDataProcessor:
+    def __init__(self):
         self.temp_list = []
+        self.temp_dt = []
         self.date_time_list = []
         self.pressure_list = []
+        self.pressure_dt = []
+        self.pressure_fall_list = []
         self.temp_fall_list = []
         self.temp_fall_datetime_list = []
-        self.pressure_fall_list = []
 
-    def load_data(self):
-        """Loads data from the CSV file and processes temperature and pressure."""
-        working_dir = os.getcwd()
-        file_path = os.path.join(working_dir, 'datafiler', self.file_name)
-
+    def load_data(self, filepath):
         try:
-            with open(file_path, "r", encoding='utf-8') as file:
-                data = file.readlines()
+            with open(filepath, "r", encoding='utf-8') as rune_csv:
+                data = rune_csv.readlines()
+
                 for index, lines in enumerate(data):
                     if index == 0 or index == len(data) - 1:
                         continue
@@ -42,23 +39,19 @@ class SolaMetroData:
         try:
             date_time_obj = datetime.strptime(date_time_value, '%d.%m.%Y %H:%M')
             self.date_time_list.append(date_time_obj)
-        except Exception as e:
-            print(f"Skipping line {index} due to invalid date format: {date_time_value} | Error: {e}")
-            return
 
-        if not temperature:
-            return
+            if pressure:
+                self.pressure_list.append(float(pressure))
+                self.pressure_dt.append(date_time_value)
 
-        try:
-            temperature = float(temperature)
-            pressure = float(pressure)
-            self.temp_list.append(temperature)
-            self.pressure_list.append(pressure)
+            if temperature:
+                self.temp_list.append(float(temperature))
+                self.temp_dt = self.date_time_list
         except Exception as e:
             print(f"Skipping line {index} due to invalid temperature or pressure values | Error: {e}")
             return
 
-        self.filter_temp_fall(date_time_obj, temperature, pressure)
+        #self.filter_temp_fall(date_time_obj, temperature, pressure)
 
     def filter_temp_fall(self, date_time_obj, temperature, pressure):
         """Filters temperature and pressure within the specific date range."""
@@ -76,39 +69,12 @@ class SolaMetroData:
 
     def get_temperatures(self):
         """Returns the list of temperatures."""
-        return self.date_time_list, self.temp_list
+        return self.temp_dt, self.temp_list
 
     def get_pressures(self):
         """Returns the list of pressures."""
-        return self.date_time_list, self.pressure_list
-
-class PlotSolaMetro:
-    def __init__(self, data_class):
-        self.data_class = data_class
-
-    def plot_temperature_and_pressure(self):
-        """Plots temperature and pressure over the filtered date range."""
-        self.data_class.load_data()
-        sola_dt, sola_temp = self.data_class.get_temperatures()
-        sola_tempfall_dt, sola_tempfall_liste, sola_trykk_fall_liste = self.data_class.get_temp_fall()
-
-        plt.figure(figsize=(12, 6))
-
-        plt.plot(sola_dt, sola_temp, label='Temperature MET', color='green')
-        plt.plot(sola_tempfall_dt, sola_tempfall_liste, label='Temperature Fall', color='red')
-
-        plt.xlabel('Date-Time')
-        plt.ylabel('Values')
-        plt.title('Temperature and Pressure over Time')
-        plt.legend()
-        plt.grid(False)
-
-        plt.xticks(rotation=45)
-        plt.tight_layout()
-        plt.show()
+        return self.pressure_dt, self.pressure_list
 
 
-# Instantiate and run
-data_processor = SolaMetroData('temperatur_trykk_met_samme_rune_time_datasett.csv')
-plotter = PlotSolaMetro(data_processor)
-plotter.plot_temperature_and_pressure()
+
+
