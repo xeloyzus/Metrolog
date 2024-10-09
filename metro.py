@@ -31,17 +31,18 @@ def plot_data():
     rune_temp_dt, rune_temp_list = rune_processor.get_temperatures()
     sola_dt, sola_temp = sola_processor.get_temperatures()
     sola_pressure_dt, sola_pressure = sola_processor.get_pressures()
-    sola_tempfall_dt, sola_tempfall_liste, _ = sola_processor.get_temp_fall()
+    rune_max_temp_fall_dt, rune_max_temp_fall_list = rune_processor.get_max_min_tempfall()
+  
     avg_times, avg_temps = calculate_moving_average(rune_temp_dt, rune_temp_list, 30)
 
-    # axis[0].plot(self.date_time_list[::6], self.pressure_barometer_list[1:], label='Trykk Barometer', color='orange')
-    # axis[0].plot(self.date_time_list, self.pressure_absolute_list[:len(self.date_time_list)], label="Trykk absolute", color="blue")
 
     figure, axis = plt.subplots(2, 1, figsize=(12, 8))
 
     axis[0].plot(sola_dt, sola_temp, label='Temperature MET', color='green')
     axis[0].plot(rune_temp_dt[:len(rune_temp_list)], rune_temp_list, label="Temperatur", color="blue")
     axis[0].plot(avg_times, avg_temps, label='Gjennomsnittt temperatur', color='orange')
+
+    axis[0].plot(rune_max_temp_fall_dt, rune_max_temp_fall_list, label='Temperatur fall', color='purple')
 
     axis[0].legend()
     axis[0].grid(False)
