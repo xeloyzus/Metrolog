@@ -6,7 +6,7 @@ import matplotlib.dates as mdates
 from matplotlib.ticker import MaxNLocator
 from rune import RuneMetroDataProcessor
 
-
+#Nyde coden
 def calculate_moving_average(times, temps, n):
     avg_times = []
     avg_temps = []
