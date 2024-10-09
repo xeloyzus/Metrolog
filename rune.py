@@ -93,26 +93,6 @@ class RuneMetroDataProcessor:
         """Returns the list of pressures."""
         return self.date_time_list, self.pressure_barometer_list
 
-    def plot_data(self):
-
-        plt.figure(figsize=(12, 6))
-        plt.subplot(2,1,2)
-        plt.plot(self.date_time_list[::6], self.pressure_barometer_list[1:], label='Trykk Barometer', color='orange')
-        plt.plot(self.date_time_list, self.pressure_absolute_list[:len(self.date_time_list)], label="Trykk absolute", color="blue")
-        
-
-        plt.xlabel('Date-Time')
-        plt.ylabel('Values')
-        plt.title('Temperature and Pressure over Time')
-        plt.legend()
-        plt.grid(False)
-
-
-        
-
-        plt.xticks(rotation=45)
-        plt.tight_layout()
-        plt.show()
-
+  
 
 

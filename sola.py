@@ -3,9 +3,8 @@ from datetime import datetime
 from matplotlib import pyplot as plt
 
 class SolaMetroData:
-    def __init__(self, file_name):
+    def __init__(self):
         # Initialize the data lists
-        self.file_name = file_name
         self.temp_list = []
         self.date_time_list = []
         self.pressure_list = []
@@ -14,13 +13,9 @@ class SolaMetroData:
         self.pressure_fall_list = []
     
 
-    def load_data(self):
-        """Loads data from the CSV file and processes temperature and pressure."""
-        working_dir = os.getcwd()
-        file_path = os.path.join(working_dir, 'datafiler', self.file_name)
-
+    def load_data(self, filepath):
         try:
-            with open(file_path, "r", encoding='utf-8') as file:
+            with open(filepath, "r", encoding='utf-8') as file:
                 data = file.readlines()
                 for index, lines in enumerate(data):
                     if index == 0 or index == len(data) - 1:
@@ -82,39 +77,3 @@ class SolaMetroData:
     def get_pressures(self):
         """Returns the list of pressures."""
         return self.date_time_list, self.pressure_list
-
-class PlotSolaMetro:
-    def __init__(self, data_class):
-        self.data_class = data_class
-
-    def plot_temperature_and_pressure(self):
-        """Plots temperature and pressure over the filtered date range."""
-        self.data_class.load_data()
-        sola_dt, sola_temp = self.data_class.get_temperatures()
-        sola_tempfall_dt, sola_tempfall_liste, sola_trykk_fall_liste = self.data_class.get_temp_fall()
-        self.date_time_list, self.pressure_list= self.data_class.get_pressures()
-
-        plt.figure(figsize=(12, 6))
-        plt.subplot(2,1,1)
-
-        plt.plot(sola_dt, sola_temp, label='Temperature MET', color='green')
-        plt.plot(sola_tempfall_dt, sola_tempfall_liste, label='Temperature Fall', color='red')
-
-        plt.subplot(2,1,2)
-        plt.plot(self.date_time_list[:len(self.pressure_list)], self.pressure_list, label="Lufttrykk", color="green")
-
-        plt.xlabel('Date-Time')
-        plt.ylabel('Values')
-        plt.title('Temperature and Pressure over Time')
-        plt.legend()
-        plt.grid(False)
-
-        plt.xticks(rotation=45)
-        plt.tight_layout()
-        plt.show()
-
-
-# Instantiate and run
-data_processor = SolaMetroData('temperatur_trykk_met_samme_rune_time_datasett.csv')
-plotter = PlotSolaMetro(data_processor)
-plotter.plot_temperature_and_pressure()
