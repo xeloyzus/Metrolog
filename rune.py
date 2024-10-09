@@ -95,7 +95,7 @@ class RuneMetroDataProcessor:
 
     def plot_data(self):
 
-        #plt.figure(figsize=(12, 6))
+        plt.figure(figsize=(12, 6))
         plt.subplot(2,1,2)
         plt.plot(self.date_time_list[::6], self.pressure_barometer_list[1:], label='Trykk Barometer', color='orange')
         plt.plot(self.date_time_list, self.pressure_absolute_list[:len(self.date_time_list)], label="Trykk absolute", color="blue")

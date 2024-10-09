@@ -95,7 +95,6 @@ class PlotSolaMetro:
         self.date_time_list, self.pressure_list= self.data_class.get_pressures()
 
         plt.figure(figsize=(12, 6))
-        plt.figure(1)
         plt.subplot(2,1,1)
 
         plt.plot(sola_dt, sola_temp, label='Temperature MET', color='green')
