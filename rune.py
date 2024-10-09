@@ -5,6 +5,8 @@ from datetime import datetime
 class RuneMetroDataProcessor:
     def __init__(self):
         self.temp_list = []
+        self.max_min_temps =[]
+        self.max_min_dates =[]
         self.avg_temp = []
         self.temp_fall_list = []
         self.date_time_list = []
@@ -36,6 +38,8 @@ class RuneMetroDataProcessor:
                     temperature = columns[4].replace(",", ".")
 
                     self.process_data(index, date_time_value, pressure_baro, pressure_abs, temperature)
+                #self.lim_temp_fall()
+                self.max_min_temp_fall()
 
         except Exception as e:
             print(f"Error reading data: {e}")
@@ -60,7 +64,7 @@ class RuneMetroDataProcessor:
 
             if temperature:
                 self.temp_list.append(float(temperature))
-                self.lim_temp_fall()
+
         except Exception as e:
             print(f"Error processing line {index}: {e}")
 
@@ -73,7 +77,25 @@ class RuneMetroDataProcessor:
             if start_date <= date_time_obj <= end_date:
                 self.temp_fall_list.append(temp_val)  # Append valid temperatures
                 self.temp_fall_datetime_list.append(date_time_obj)
-                # print(f"Time: {date_time_obj.strftime('%Y-%d-%m %H:%M')}, Temperature: {temp_val}")
+                #print(f"Time: {date_time_obj.strftime('%Y-%d-%m %H:%M')}, Temperature: {temp_val}")
+
+    def max_min_temp_fall(self):
+        start_date = datetime(2021, 6, 11, 17, 31)
+        end_date = datetime(2021, 6, 12, 3, 5)
+        for date_time_obj, temp_val in zip(self.date_time_list, self.temp_list):
+            # Check if the date matches the start or end date
+            if date_time_obj == start_date or date_time_obj == end_date:
+                # Append the temperature and its corresponding date to the lists
+                self.max_min_temps.append(temp_val)
+                self.max_min_dates.append(date_time_obj)
+
+
+    def get_temp_fall(self):
+        return self.temp_fall_datetime_list,self.temp_fall_list
+
+    def get_max_min_tempfall(self):
+
+        return self.max_min_dates,self.max_min_temps
 
     def get_temperatures(self):
         """Returns the list of temperatures."""
