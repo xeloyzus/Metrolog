@@ -2,6 +2,8 @@ import os
 from datetime import datetime
 import numpy as np
 from matplotlib import pyplot as plt
+from sola import SolaMetroData
+
 
 
 # Define a class to encapsulate the data handling
@@ -50,7 +52,7 @@ class RuneMetroDataProcessor:
                     date_time_value = date_time_value.replace("00:", "12:")
                 date_time_obj = datetime.strptime(date_time_value, '%m/%d/%Y %I:%M:%S %p')
             else:
-                date_time_obj = datetime.strptime(date_time_value, '%d.%m.%Y %H:%M')
+                date_time_obj = datetime.strptime(date_time_value, '%m.%d.%Y %H:%M')
 
             self.date_time_list.append(date_time_obj)
 
@@ -77,7 +79,7 @@ class RuneMetroDataProcessor:
             if start_date <= date_time_obj <= end_date:
                 self.temp_fall_list.append(temp_val)  # Append valid temperatures
                 self.temp_fall_datetime_list.append(date_time_obj)
-                print(f"Time: {date_time_obj.strftime('%Y-%m-%d %H:%M')}, Temperature: {temp_val}")
+                #print(f"Time: {date_time_obj.strftime('%Y-%d-%m %H:%M')}, Temperature: {temp_val}")
 
     def get_temperatures(self):
         """Returns the list of temperatures."""
@@ -93,15 +95,20 @@ class RuneMetroDataProcessor:
 
     def plot_data(self):
 
-        plt.figure(figsize=(12, 6))
-
-        plt.plot(self.pressure_bar_dt, self.pressure_barometer_list, label='Temperature MET', color='green')
+        #plt.figure(figsize=(12, 6))
+        plt.subplot(2,1,2)
+        plt.plot(self.date_time_list[::6], self.pressure_barometer_list[1:], label='Trykk Barometer', color='orange')
+        plt.plot(self.date_time_list, self.pressure_absolute_list[:len(self.date_time_list)], label="Trykk absolute", color="blue")
+        
 
         plt.xlabel('Date-Time')
         plt.ylabel('Values')
         plt.title('Temperature and Pressure over Time')
         plt.legend()
         plt.grid(False)
+
+
+        
 
         plt.xticks(rotation=45)
         plt.tight_layout()

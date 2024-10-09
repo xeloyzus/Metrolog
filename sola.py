@@ -12,6 +12,7 @@ class SolaMetroData:
         self.temp_fall_list = []
         self.temp_fall_datetime_list = []
         self.pressure_fall_list = []
+    
 
     def load_data(self):
         """Loads data from the CSV file and processes temperature and pressure."""
@@ -91,11 +92,17 @@ class PlotSolaMetro:
         self.data_class.load_data()
         sola_dt, sola_temp = self.data_class.get_temperatures()
         sola_tempfall_dt, sola_tempfall_liste, sola_trykk_fall_liste = self.data_class.get_temp_fall()
+        self.date_time_list, self.pressure_list= self.data_class.get_pressures()
 
         plt.figure(figsize=(12, 6))
+        plt.figure(1)
+        plt.subplot(2,1,1)
 
         plt.plot(sola_dt, sola_temp, label='Temperature MET', color='green')
         plt.plot(sola_tempfall_dt, sola_tempfall_liste, label='Temperature Fall', color='red')
+
+        plt.subplot(2,1,2)
+        plt.plot(self.date_time_list[:len(self.pressure_list)], self.pressure_list, label="Lufttrykk", color="green")
 
         plt.xlabel('Date-Time')
         plt.ylabel('Values')
