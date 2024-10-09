@@ -1,6 +1,8 @@
+import os
 from datetime import datetime
+from matplotlib import pyplot as plt
 
-class SolaMetroDataProcessor:
+class SolaMetroData:
     def __init__(self):
         # Initialize the data lists
         self.temp_list = []
@@ -9,6 +11,7 @@ class SolaMetroDataProcessor:
         self.temp_fall_list = []
         self.temp_fall_datetime_list = []
         self.pressure_fall_list = []
+    
 
     def load_data(self, filepath):
         try:
@@ -44,7 +47,7 @@ class SolaMetroDataProcessor:
 
         try:
             temperature = float(temperature)
-            pressure = float(pressure)
+            pressure = float(pressure)/10
             self.temp_list.append(temperature)
             self.pressure_list.append(pressure)
         except Exception as e:
