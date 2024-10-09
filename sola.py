@@ -1,6 +1,8 @@
+
 from datetime import datetime
 
 class SolaMetroDataProcessor:
+
     def __init__(self):
         # Initialize the data lists
         self.temp_list = []
@@ -24,7 +26,6 @@ class SolaMetroDataProcessor:
                     date_time_value = columns[2]
                     temperature = columns[3].replace(",", ".")
                     pressure = columns[4].replace(",", ".")
-
                     self.process_data(index, date_time_value, temperature, pressure)
 
         except Exception as e:
@@ -44,7 +45,7 @@ class SolaMetroDataProcessor:
 
         try:
             temperature = float(temperature)
-            pressure = float(pressure)
+            pressure = float(pressure) / 10
             self.temp_list.append(temperature)
             self.pressure_list.append(pressure)
         except Exception as e:

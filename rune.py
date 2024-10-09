@@ -1,9 +1,12 @@
+
 from datetime import datetime
 
 # Define a class to encapsulate the data handling
 class RuneMetroDataProcessor:
     def __init__(self):
         self.temp_list = []
+        self.max_min_temps =[]
+        self.max_min_dates =[]
         self.avg_temp = []
         self.temp_fall_list = []
         self.date_time_list = []
@@ -35,7 +38,9 @@ class RuneMetroDataProcessor:
                     temperature = columns[4].replace(",", ".")
 
                     self.process_data(index, date_time_value, pressure_baro, pressure_abs, temperature)
-                self.temp_fall()
+                #self.lim_temp_fall()
+                self.max_min_temp_fall()
+
         except Exception as e:
             print(f"Error reading data: {e}")
 
@@ -52,6 +57,7 @@ class RuneMetroDataProcessor:
 
             if pressure_baro:
                 self.pressure_barometer_list.append(round(float(pressure_baro), 2))
+                self.pressure_bar_dt.append(date_time_obj)
 
             if pressure_abs:
                 self.pressure_absolute_list.append(float(pressure_abs))
@@ -62,24 +68,34 @@ class RuneMetroDataProcessor:
         except Exception as e:
             print(f"Error processing line {index}: {e}")
 
-    def temp_fall(self):
+    def lim_temp_fall(self):
+        # Define the start and end dates
         start_date = datetime(2021, 6, 11, 17, 31)
         end_date = datetime(2021, 6, 12, 3, 5)
-
-        # Use a set to track seen dates and avoid duplicates
-        seen_dates = set()
-
         for date_time_obj, temp_val in zip(self.date_time_list, self.temp_list):
-            if start_date <= date_time_obj <= end_date and date_time_obj not in seen_dates:
-                self.temp_fall_list.append(temp_val)
+            # Collect temperatures and pressures within the specified date range
+            if start_date <= date_time_obj <= end_date:
+                self.temp_fall_list.append(temp_val)  # Append valid temperatures
                 self.temp_fall_datetime_list.append(date_time_obj)
-                seen_dates.add(date_time_obj)
+                #print(f"Time: {date_time_obj.strftime('%Y-%d-%m %H:%M')}, Temperature: {temp_val}")
 
-        print(f"Filtered temp_fall count: {len(self.temp_fall_list)}")
-        print(f"Filtered dates: {self.temp_fall_datetime_list[:5]}")
+    def max_min_temp_fall(self):
+        start_date = datetime(2021, 6, 11, 17, 31)
+        end_date = datetime(2021, 6, 12, 3, 5)
+        for date_time_obj, temp_val in zip(self.date_time_list, self.temp_list):
+            # Check if the date matches the start or end date
+            if date_time_obj == start_date or date_time_obj == end_date:
+                # Append the temperature and its corresponding date to the lists
+                self.max_min_temps.append(temp_val)
+                self.max_min_dates.append(date_time_obj)
+
 
     def get_temp_fall(self):
-        return self.temp_fall_datetime_list, self.temp_fall_list
+        return self.temp_fall_datetime_list,self.temp_fall_list
+
+    def get_max_min_tempfall(self):
+
+        return self.max_min_dates,self.max_min_temps
 
     def get_temperatures(self):
         """Returns the list of temperatures."""
@@ -92,6 +108,4 @@ class RuneMetroDataProcessor:
     def get_pressures_bar(self):
         """Returns the list of pressures."""
         return self.date_time_list, self.pressure_barometer_list
-
-
 
