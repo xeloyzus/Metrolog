@@ -1,10 +1,5 @@
-import os
+
 from datetime import datetime
-import numpy as np
-from matplotlib import pyplot as plt
-from sola import SolaMetroData
-
-
 
 # Define a class to encapsulate the data handling
 class RuneMetroDataProcessor:
@@ -18,7 +13,7 @@ class RuneMetroDataProcessor:
         self.pressure_absolute_list = []
         self.valid_times_list = []
         self.averaged_temps_list = []
-        self.pressure_bar_dt=[]
+        self.pressure_bar_dt = []
 
     def load_data(self, filepath):
         try:
@@ -57,9 +52,8 @@ class RuneMetroDataProcessor:
             self.date_time_list.append(date_time_obj)
 
             if pressure_baro:
-                self.pressure_barometer_list.append(round(float(pressure_baro),2))
+                self.pressure_barometer_list.append(round(float(pressure_baro), 2))
                 self.pressure_bar_dt.append(date_time_obj)
-
 
             if pressure_abs:
                 self.pressure_absolute_list.append(float(pressure_abs))
@@ -79,7 +73,7 @@ class RuneMetroDataProcessor:
             if start_date <= date_time_obj <= end_date:
                 self.temp_fall_list.append(temp_val)  # Append valid temperatures
                 self.temp_fall_datetime_list.append(date_time_obj)
-                #print(f"Time: {date_time_obj.strftime('%Y-%d-%m %H:%M')}, Temperature: {temp_val}")
+                # print(f"Time: {date_time_obj.strftime('%Y-%d-%m %H:%M')}, Temperature: {temp_val}")
 
     def get_temperatures(self):
         """Returns the list of temperatures."""
@@ -92,7 +86,4 @@ class RuneMetroDataProcessor:
     def get_pressures_bar(self):
         """Returns the list of pressures."""
         return self.date_time_list, self.pressure_barometer_list
-
-  
-
 
