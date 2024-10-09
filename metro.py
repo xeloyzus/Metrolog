@@ -34,7 +34,7 @@ def plot_data():
 
     axis[0].plot(sola_dt, sola_temp, label='Temperature MET', color='green')
     axis[0].plot(sola_tempfall_dt, sola_tempfall_liste, label='Temperature Fall', color='red')
-    axis[0].plot(rune_temp_dt[:len(rune_temp_list)], rune_temp_list, label="Temperatur", color="green")
+    axis[0].plot(rune_temp_dt[:len(rune_temp_list)], rune_temp_list, label="Temperatur", color="blue")
 
     axis[0].legend()
     axis[0].grid(False)
@@ -42,8 +42,7 @@ def plot_data():
     
     axis[1].plot(rune_bar_dt[::6],rune_bar_pressure[1:], label='Trykk Barometer', color='orange')
     #axis[1].plot(sola_pressure_dt,sola_pressure, label='Absolutt Trykk MET', color='green')
-    
-    #axis[1].plot(rune_abs_dt, rune_abs_pressure[:len(rune_abs_dt)], label="Trykk absolute", color="blue")
+    axis[1].plot(rune_abs_dt[:len(rune_abs_pressure)], rune_abs_pressure, label="Trykk absolute", color="blue")
     
    
     axis[1].legend()
