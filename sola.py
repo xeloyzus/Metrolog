@@ -1,23 +1,19 @@
-import os
 from datetime import datetime
-from matplotlib import pyplot as plt
 
 class SolaMetroDataProcessor:
     def __init__(self):
+        # Initialize the data lists
         self.temp_list = []
-        self.temp_dt = []
         self.date_time_list = []
         self.pressure_list = []
-        self.pressure_dt = []
-        self.pressure_fall_list = []
         self.temp_fall_list = []
         self.temp_fall_datetime_list = []
+        self.pressure_fall_list = []
 
     def load_data(self, filepath):
         try:
-            with open(filepath, "r", encoding='utf-8') as rune_csv:
-                data = rune_csv.readlines()
-
+            with open(filepath, "r", encoding='utf-8') as file:
+                data = file.readlines()
                 for index, lines in enumerate(data):
                     if index == 0 or index == len(data) - 1:
                         continue
@@ -39,19 +35,23 @@ class SolaMetroDataProcessor:
         try:
             date_time_obj = datetime.strptime(date_time_value, '%d.%m.%Y %H:%M')
             self.date_time_list.append(date_time_obj)
+        except Exception as e:
+            print(f"Skipping line {index} due to invalid date format: {date_time_value} | Error: {e}")
+            return
 
-            if pressure:
-                self.pressure_list.append(float(pressure))
-                self.pressure_dt.append(date_time_value)
+        if not temperature:
+            return
 
-            if temperature:
-                self.temp_list.append(float(temperature))
-                self.temp_dt = self.date_time_list
+        try:
+            temperature = float(temperature)
+            pressure = float(pressure)
+            self.temp_list.append(temperature)
+            self.pressure_list.append(pressure)
         except Exception as e:
             print(f"Skipping line {index} due to invalid temperature or pressure values | Error: {e}")
             return
 
-        #self.filter_temp_fall(date_time_obj, temperature, pressure)
+        self.filter_temp_fall(date_time_obj, temperature, pressure)
 
     def filter_temp_fall(self, date_time_obj, temperature, pressure):
         """Filters temperature and pressure within the specific date range."""
@@ -69,12 +69,8 @@ class SolaMetroDataProcessor:
 
     def get_temperatures(self):
         """Returns the list of temperatures."""
-        return self.temp_dt, self.temp_list
+        return self.date_time_list, self.temp_list
 
     def get_pressures(self):
         """Returns the list of pressures."""
-        return self.pressure_dt, self.pressure_list
-
-
-
-
+        return self.date_time_list, self.pressure_list
