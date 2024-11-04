@@ -1,6 +1,9 @@
 import os
 import matplotlib.pyplot as plt
 import numpy as np
+
+from sauda import SaudaMetroDataProcessor
+from sirdal import SirdalMetroDataProcessor
 from rune import RuneMetroDataProcessor
 from sola import SolaMetroDataProcessor
 
@@ -11,6 +14,15 @@ rune_processor.load_data(rune_filepath)
 sola_processor = SolaMetroDataProcessor()
 sola_filepath = os.path.join(os.getcwd(), 'datafiler', 'temperatur_trykk_met_samme_rune_time_datasett.csv')
 sola_processor.load_data(sola_filepath)
+
+sirdal_processor = SirdalMetroDataProcessor()
+sirdal_filepath = os.path.join(os.getcwd(), 'datafiler', 'temperatur_trykk_sauda_sinnes_samme_tidsperiode.csv.txt')
+sirdal_processor.load_data(sirdal_filepath)
+
+
+sauda_processor = SaudaMetroDataProcessor()
+sauda_filepath = os.path.join(os.getcwd(), 'datafiler', 'temperatur_trykk_sauda_sinnes_samme_tidsperiode.csv.txt')
+sauda_processor.load_data(sauda_filepath)
 
 
 def calculate_moving_average(times, temps, n):
@@ -31,19 +43,18 @@ def plot_data():
     rune_temp_dt, rune_temp_list = rune_processor.get_temperatures()
     sola_dt, sola_temp = sola_processor.get_temperatures()
     sola_pressure_dt, sola_pressure = sola_processor.get_pressures()
-    rune_max_tempfall_dt, rune_max_tempfall_liste = rune_processor.get_max_min_tempfall()
-    print(f"value {rune_max_tempfall_dt}")
-    print(f"value {rune_max_tempfall_liste}")
+    rune_max_temp_fall_dt, rune_max_temp_fall_list = rune_processor.get_max_min_tempfall()
+
     avg_times, avg_temps = calculate_moving_average(rune_temp_dt, rune_temp_list, 30)
 
 
     figure, axis = plt.subplots(2, 1, figsize=(12, 8))
-
+    #Todo
     axis[0].plot(sola_dt, sola_temp, label='Temperature MET', color='green')
     axis[0].plot(rune_temp_dt[:len(rune_temp_list)], rune_temp_list, label="Temperatur", color="blue")
     axis[0].plot(avg_times, avg_temps, label='Gjennomsnittt temperatur', color='orange')
 
-    axis[0].plot(rune_max_tempfall_dt, rune_max_tempfall_liste, label='Temperatur fall', color='purple')
+    axis[0].plot(rune_max_temp_fall_dt, rune_max_temp_fall_list, label='Temperatur fall', color='purple')
 
     axis[0].legend()
     axis[0].grid(False)
@@ -61,4 +72,5 @@ def plot_data():
     plt.show()
 
 
-plot_data()
+#plot_data()
+
