@@ -44,6 +44,7 @@ def plot_data():
     sola_dt, sola_temp = sola_processor.get_temperatures()
     sola_pressure_dt, sola_pressure = sola_processor.get_pressures()
     rune_max_temp_fall_dt, rune_max_temp_fall_list = rune_processor.get_max_min_tempfall()
+    sola_max_temp_fall_dt, sola_max_temp_fall_list = sola_processor.get_max_min_tempfall()
 
     avg_times, avg_temps = calculate_moving_average(rune_temp_dt, rune_temp_list, 30)
 
@@ -55,6 +56,8 @@ def plot_data():
     axis[0].plot(avg_times, avg_temps, label='Gjennomsnittt temperatur', color='orange')
 
     axis[0].plot(rune_max_temp_fall_dt, rune_max_temp_fall_list, label='Temperatur fall', color='purple')
+
+    axis[0].plot(sola_max_temp_fall_dt, sola_max_temp_fall_list, label='Temperatur fall', color='black')
 
     axis[0].legend()
     axis[0].grid(False)
@@ -72,5 +75,5 @@ def plot_data():
     plt.show()
 
 
-#plot_data()
+plot_data()
 
