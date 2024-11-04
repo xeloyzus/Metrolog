@@ -25,28 +25,55 @@ sauda_filepath = os.path.join(os.getcwd(), 'datafiler', 'temperatur_trykk_sauda_
 sauda_processor.load_data(sauda_filepath)
 
 
-def calculate_moving_average(times, temps, n):
+def calculate_moving_average(date_time, data, n):
     avg_times = []
-    avg_temps = []
+    avg_data = []
+
+    # Loop over each valid time and temperature index
+    for i in range(n, len(data) - n):
+        avg_times.append(date_time[i])  # Only append valid times (those that won't go out of bounds)
+        avg_data.append(np.mean(data[i - n:i + n + 1]))  # Calculate the mean for n previous, current, and n next
+
+    return avg_data, avg_temps
+
+
+# Function to calculate the moving standard deviation with sample adjustment
+def calculate_moving_std(times, temps, n):
+    std_times = []
+    std_temps = []
 
     # Loop over each valid time and temperature index
     for i in range(n, len(temps) - n):
-        avg_times.append(times[i])  # Only append valid times (those that won't go out of bounds)
-        avg_temps.append(np.mean(temps[i - n:i + n + 1]))  # Calculate the mean for n previous, current, and n next
+        std_times.append(times[i])  # Only append valid times
 
-    return avg_times, avg_temps
+        # Calculate the sample standard deviation for the window
+        std_temps.append(np.std(temps[i - n:i + n + 1], ddof=1))
+
+    return std_times, std_temps
+
+
+rune_bar_dt, rune_bar_pressure = rune_processor.get_pressures_bar()
+rune_abs_dt, rune_abs_pressure = rune_processor.get_pressures_abs()
+rune_temp_dt, rune_temp_list = rune_processor.get_temperatures()
+sola_dt, sola_temp = sola_processor.get_temperatures()
+sola_pressure_dt, sola_pressure = sola_processor.get_pressures()
+rune_max_temp_fall_dt, rune_max_temp_fall_list = rune_processor.get_max_min_tempfall()
+sola_max_temp_fall_dt, sola_max_temp_fall_list= sola_processor.get_max_min_tempfall()
+avg_times, avg_temps = calculate_moving_average(rune_temp_dt, rune_temp_list, 30)
+
+
+def plot_std():
+    std_time, std_temps = calculate_moving_std(avg_times, avg_temps , 30)
+
+    plt.errorbar(std_time, std_temps, yerr=std_temps, errorevery=100, capsize=3, label="Temperature with Std Dev")
+    plt.xlabel("Date-time")
+    plt.ylabel("Temperatur STD")
+    plt.title("Temperatur Standardavvik")
+    plt.legend()
+    plt.show()
 
 
 def plot_data():
-    rune_bar_dt, rune_bar_pressure = rune_processor.get_pressures_bar()
-    rune_abs_dt, rune_abs_pressure = rune_processor.get_pressures_abs()
-    rune_temp_dt, rune_temp_list = rune_processor.get_temperatures()
-    sola_dt, sola_temp = sola_processor.get_temperatures()
-    sola_pressure_dt, sola_pressure = sola_processor.get_pressures()
-    rune_max_temp_fall_dt, rune_max_temp_fall_list = rune_processor.get_max_min_tempfall()
-
-    avg_times, avg_temps = calculate_moving_average(rune_temp_dt, rune_temp_list, 30)
-
 
     figure, axis = plt.subplots(2, 1, figsize=(12, 8))
     #Todo
@@ -55,6 +82,8 @@ def plot_data():
     axis[0].plot(avg_times, avg_temps, label='Gjennomsnittt temperatur', color='orange')
 
     axis[0].plot(rune_max_temp_fall_dt, rune_max_temp_fall_list, label='Temperatur fall', color='purple')
+
+    axis[0].plot(sola_max_temp_fall_dt, sola_max_temp_fall_list, label='Temperatur fall sola', color='black')
 
     axis[0].legend()
     axis[0].grid(False)
@@ -72,5 +101,5 @@ def plot_data():
     plt.show()
 
 
-#plot_data()
+plot_data()
 
