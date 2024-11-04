@@ -36,19 +36,20 @@ def calculate_moving_average(times, temps, n):
 
     return avg_times, avg_temps
 
+rune_bar_dt, rune_bar_pressure = rune_processor.get_pressures_bar()
+rune_abs_dt, rune_abs_pressure = rune_processor.get_pressures_abs()
+rune_temp_dt, rune_temp_list = rune_processor.get_temperatures()
+sola_dt, sola_temp = sola_processor.get_temperatures()
+sola_pressure_dt, sola_pressure = sola_processor.get_pressures()
+rune_max_temp_fall_dt, rune_max_temp_fall_list = rune_processor.get_max_min_tempfall()
+
+sola_max_temp_fall_dt, sola_max_temp_fall_list= sola_processor.get_max_min_tempfall()
+    
+avg_times, avg_temps = calculate_moving_average(rune_temp_dt, rune_temp_list, 30)
+
 
 def plot_data():
-    rune_bar_dt, rune_bar_pressure = rune_processor.get_pressures_bar()
-    rune_abs_dt, rune_abs_pressure = rune_processor.get_pressures_abs()
-    rune_temp_dt, rune_temp_list = rune_processor.get_temperatures()
-    sola_dt, sola_temp = sola_processor.get_temperatures()
-    sola_pressure_dt, sola_pressure = sola_processor.get_pressures()
-    rune_max_temp_fall_dt, rune_max_temp_fall_list = rune_processor.get_max_min_tempfall()
-    sola_max_temp_fall_dt, sola_max_temp_fall_list = sola_processor.get_max_min_tempfall()
-
-    avg_times, avg_temps = calculate_moving_average(rune_temp_dt, rune_temp_list, 30)
-
-
+   
     figure, axis = plt.subplots(2, 1, figsize=(12, 8))
     #Todo
     axis[0].plot(sola_dt, sola_temp, label='Temperature MET', color='green')
@@ -57,8 +58,8 @@ def plot_data():
 
     axis[0].plot(rune_max_temp_fall_dt, rune_max_temp_fall_list, label='Temperatur fall', color='purple')
 
-    axis[0].plot(sola_max_temp_fall_dt, sola_max_temp_fall_list, label='Temperatur fall', color='black')
-
+    axis[0].plot(sola_max_temp_fall_dt, sola_max_temp_fall_list, label='Temperatur fall sola', color='black')
+   
     axis[0].legend()
     axis[0].grid(False)
     axis[0].tick_params(axis="x", rotation=45)
@@ -75,5 +76,7 @@ def plot_data():
     plt.show()
 
 
+
 plot_data()
 
+print(sola_max_temp_fall_dt,sola_max_temp_fall_list)

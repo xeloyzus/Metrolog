@@ -19,6 +19,7 @@ class SolaMetroDataProcessor:
             with open(filepath, "r", encoding='utf-8') as file:
                 data = file.readlines()
                 for index, lines in enumerate(data):
+
                     if index == 0 or index == len(data) - 1:
                         continue
                     lines = lines.strip()
@@ -29,6 +30,8 @@ class SolaMetroDataProcessor:
                     temperature = columns[3].replace(",", ".")
                     pressure = columns[4].replace(",", ".")
                     self.process_data(index, date_time_value, temperature, pressure)
+
+                self.max_min_temp_fall()
 
         except Exception as e:
             print(f"An error occurred: {e}")
@@ -69,9 +72,11 @@ class SolaMetroDataProcessor:
     def get_temp_fall(self):
         """Returns temperatures and pressures during the specified fall period."""
         return self.temp_fall_datetime_list, self.temp_fall_list, self.pressure_fall_list
+    
     def max_min_temp_fall(self):
-        start_date = datetime(2021, 6, 11, 17,00)
-        end_date = datetime(2021, 6, 12, 3,00)
+
+        start_date = datetime(2021, 6, 11, 17,0)
+        end_date = datetime(2021, 6, 12, 3,0)
         for date_time_obj, temp_val in zip(self.temp_fall_datetime_list, self.temp_fall_list):
             # Check if the date matches the start or end date
             if date_time_obj == start_date or date_time_obj == end_date:
@@ -79,6 +84,7 @@ class SolaMetroDataProcessor:
                 self.max_min_temps.append(temp_val)
                 self.max_min_dates.append(date_time_obj)
     def get_max_min_tempfall(self):
+        
         return self.max_min_dates,self.max_min_temps
 
     def get_temperatures(self):
