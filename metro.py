@@ -19,6 +19,7 @@ sirdal_processor = SirdalMetroDataProcessor()
 sirdal_filepath = os.path.join(os.getcwd(), 'datafiler', 'temperatur_trykk_sauda_sinnes_samme_tidsperiode.csv.txt')
 sirdal_processor.load_data(sirdal_filepath)
 
+
 sauda_processor = SaudaMetroDataProcessor()
 sauda_filepath = os.path.join(os.getcwd(), 'datafiler', 'temperatur_trykk_sauda_sinnes_samme_tidsperiode.csv.txt')
 sauda_processor.load_data(sauda_filepath)
@@ -35,35 +36,6 @@ def calculate_moving_average(times, temps, n):
 
     return avg_times, avg_temps
 
-# Function to calculate the moving standard deviation with sample adjustment
-def calculate_moving_std(times, temps, n):
-    std_times = []
-    std_temps = []
-
-    # Loop over each valid time and temperature index
-    for i in range(n, len(temps) - n):
-        std_times.append(times[i])  # Only append valid times
-
-        # Calculate the sample standard deviation for the window
-        std_temps.append(np.std(temps[i - n:i + n + 1], ddof=1))
-
-    return std_times, std_temps
-
-
-rune_temp_dt, rune_temp_list = rune_processor.get_temperatures()
-avg_times, avg_temps = calculate_moving_average(rune_temp_dt, rune_temp_list, 30)
-
-
-def plot_std():
-    std_time, std_temps = calculate_moving_std(avg_times, avg_temps , 30)
-
-    plt.errorbar(std_time, std_temps, yerr=std_temps, errorevery=100, capsize=3, label="Temperature with Std Dev")
-    plt.xlabel("Date-time")
-    plt.ylabel("Temperatur STD")
-    plt.title("Temperatur Standardavvik")
-    plt.legend()
-    plt.show()
-
 
 def plot_data():
     rune_bar_dt, rune_bar_pressure = rune_processor.get_pressures_bar()
@@ -74,6 +46,7 @@ def plot_data():
     rune_max_temp_fall_dt, rune_max_temp_fall_list = rune_processor.get_max_min_tempfall()
 
     avg_times, avg_temps = calculate_moving_average(rune_temp_dt, rune_temp_list, 30)
+
 
     figure, axis = plt.subplots(2, 1, figsize=(12, 8))
     #Todo
@@ -98,4 +71,6 @@ def plot_data():
     plt.tight_layout()
     plt.show()
 
+
 #plot_data()
+
