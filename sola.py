@@ -74,17 +74,20 @@ class SolaMetroDataProcessor:
         return self.temp_fall_datetime_list, self.temp_fall_list, self.pressure_fall_list
     
     def max_min_temp_fall(self):
-
-        start_date = datetime(2021, 6, 11, 17,0)
-        end_date = datetime(2021, 6, 12, 3,0)
+        start_date = datetime(2021, 6, 11, 17, 0)
+        end_date = datetime(2021, 6, 12, 3, 0)
+        temps_in_range = []
         for date_time_obj, temp_val in zip(self.temp_fall_datetime_list, self.temp_fall_list):
-            # Check if the date matches the start or end date
-            if date_time_obj == start_date or date_time_obj == end_date:
-                # Append the temperature and its corresponding date to the lists
-                self.max_min_temps.append(temp_val)
-                self.max_min_dates.append(date_time_obj)
+            if start_date <= date_time_obj <= end_date:
+                temps_in_range.append((date_time_obj, temp_val))
+
+        if temps_in_range:
+            start_temp = temps_in_range[0]
+            end_temp = temps_in_range[-1]
+
+            self.max_min_dates = [start_temp[0], end_temp[0]]
+            self.max_min_temps = [start_temp[1], end_temp[1]]
     def get_max_min_tempfall(self):
-        
         return self.max_min_dates,self.max_min_temps
 
     def get_temperatures(self):
