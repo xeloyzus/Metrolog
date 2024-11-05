@@ -44,8 +44,12 @@ def plot_data():
     sola_dt, sola_temp = sola_processor.get_temperatures()
     sola_pressure_dt, sola_pressure = sola_processor.get_pressures()
     rune_max_temp_fall_dt, rune_max_temp_fall_list = rune_processor.get_max_min_tempfall()
-
     sola_max_temp_fall_dt, sola_max_temp_fall_list= sola_processor.get_max_min_tempfall()
+    sirdal_dt, sirdal_pressure = sirdal_processor.get_pressures()
+    sirdal_dt_temp, sirdal_temp = sirdal_processor.get_temperatures()
+    sauda_dt_trykk, sauda_trykk = sauda_processor.get_pressures()
+    sauda_dt_temp, sauda_temp = sauda_processor.get_temperatures()
+
         
     avg_times, avg_temps = calculate_moving_average(rune_temp_dt, rune_temp_list, 30)
 
@@ -55,10 +59,12 @@ def plot_data():
     axis[0].plot(sola_dt, sola_temp, label='Temperature MET', color='green')
     axis[0].plot(rune_temp_dt[:len(rune_temp_list)], rune_temp_list, label="Temperatur", color="blue")
     axis[0].plot(avg_times, avg_temps, label='Gjennomsnittt temperatur', color='orange')
-
     axis[0].plot(rune_max_temp_fall_dt, rune_max_temp_fall_list, label='Temperatur fall', color='purple')
-
     axis[0].plot(sola_max_temp_fall_dt, sola_max_temp_fall_list, label='Temperatur fall sola', color='black')
+    axis[0].plot(sirdal_dt_temp, sirdal_temp, label="Temperatur sirdal", color="red")
+    axis[0].plot(sauda_dt_temp, sauda_temp, label="Temperatur sauda", color="pink")
+
+
    
     axis[0].legend()
     axis[0].grid(False)
@@ -67,6 +73,9 @@ def plot_data():
     axis[1].plot(rune_bar_dt[::6], rune_bar_pressure[:-1], label='Trykk Barometer', color='orange')
     axis[1].plot(sola_dt, sola_pressure, label='Absolutt Trykk MET', color='green')
     axis[1].plot(rune_abs_dt, rune_abs_pressure, label="Trykk absolute", color="blue")
+    axis[1].plot(sirdal_dt, sirdal_pressure, label="Trykk sirdal", color="red")
+    axis[1].plot(sauda_dt_trykk, sauda_trykk, label="Trykk sauda", color="pink")
+
 
     axis[1].legend()
     axis[1].grid(False)
@@ -74,7 +83,6 @@ def plot_data():
 
     plt.tight_layout()
     plt.show()
-    print(sola_max_temp_fall_dt,sola_max_temp_fall_list)
 
 
 
