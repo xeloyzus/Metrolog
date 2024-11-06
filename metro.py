@@ -84,7 +84,24 @@ def plot_data():
     plt.tight_layout()
     plt.show()
 
+def plot_histogrammene():
+    _, sola_temp = sola_processor.get_temperatures()
+    _, rune_temp_list = rune_processor.get_temperatures()
 
+    fig, axs = plt.subplots(1, 2, figsize=(12, 5))
+    
+    axs[0].hist(sola_temp, bins=range(int(min(sola_temp)), int(max(sola_temp))+1))
+    axs[0].set_title('Temperaturer, Sola')
+    axs[0].set_xlabel('Temperatur')
+    axs[0].legend()
+
+    axs[1].hist(rune_temp_list, bins=range(int(min(rune_temp_list)), int(max(rune_temp_list)) + 1))
+    axs[1].set_title('Temperaturer, Rune')
+    axs[1].set_xlabel('Temperatur')
+    axs[1].legend()
+
+    plt.tight_layout()
+    plt.show()
 
 plot_data()
-
+plot_histogrammene()
