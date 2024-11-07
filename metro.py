@@ -36,8 +36,8 @@ def calculate_moving_average(date_time, data, n):
 
     return avg_times, avg_data
 
-
 # Function to calculate the moving standard deviation with sample adjustment
+# The Standard deviation must be >=0 and <=1
 def calculate_moving_std(times, temps, n):
     std_times = []
     std_temps = []
@@ -51,39 +51,91 @@ def calculate_moving_std(times, temps, n):
 
     return std_times, std_temps
 
-
 rune_bar_dt, rune_bar_pressure = rune_processor.get_pressures_bar()
 rune_abs_dt, rune_abs_pressure = rune_processor.get_pressures_abs()
 rune_temp_dt, rune_temp_list = rune_processor.get_temperatures()
+rune_max_temp_fall_dt, rune_max_temp_fall_list = rune_processor.get_max_min_tempfall()
+
 sola_dt, sola_temp = sola_processor.get_temperatures()
 sola_pressure_dt, sola_pressure = sola_processor.get_pressures()
-rune_max_temp_fall_dt, rune_max_temp_fall_list = rune_processor.get_max_min_tempfall()
-sola_max_temp_fall_dt, sola_max_temp_fall_list= sola_processor.get_max_min_tempfall()
-avg_times, avg_temps = calculate_moving_average(rune_temp_dt, rune_temp_list, 30)
+sola_max_temp_fall_dt, sola_max_temp_fall_list = sola_processor.get_max_min_tempfall()
+
+sirdal_dt, sirdal_pressure = sirdal_processor.get_pressures()
+sirdal_dt_temp, sirdal_temp = sirdal_processor.get_temperatures()
+sauda_dt_trykk, sauda_trykk = sauda_processor.get_pressures()
+sauda_dt, sauda_temp_list = sauda_processor.get_temperatures()
+
+rune_avg_dt, rune_avg_temps = calculate_moving_average(rune_temp_dt, rune_temp_list, 30)
+
+# Funksjon for å finne samsvarende tidspunkt og beregne forskjeller
+def calculate_differences(rune_dt, rune_temp, rune_pressure, sola_dt, sola_temp, sola_pressure):
+    temp_diffs = []
+    pressure_diffs = []
+    matched_times = []
+
+    # Finn samsvarende tidspunkter
+    for i, rune_time in enumerate(rune_dt):
+        for j, sola_time in enumerate(sola_dt):
+            # Sjekk om dato, time, og minutter (0) stemmer overens
+            if rune_time == sola_time:
+                temp_diff = abs(rune_temp[i] - sola_temp[j])
+                pressure_diff = abs(rune_pressure[i] - sola_pressure[j])
+
+                temp_diffs.append(temp_diff)
+                pressure_diffs.append(pressure_diff)
+                matched_times.append(rune_time)  # Samme tidspunkt i begge datasett
+
+    return matched_times, temp_diffs, pressure_diffs
+
+def diff_resultat():
+    # Beregn forskjeller
+    matched_times, temp_diffs, pressure_diffs = calculate_differences(rune_temp_dt, rune_temp_list, rune_abs_pressure,
+                                                                      sola_dt, sola_temp, sola_pressure)
+
+    # Finne gjennomsnittlige forskjeller
+    average_temp_diff = np.mean(temp_diffs)
+    average_pressure_diff = np.mean(pressure_diffs)
+
+    # Finne tidspunkter med størst og minst forskjell
+    max_temp_diff_time = matched_times[temp_diffs.index(max(temp_diffs))]
+    min_temp_diff_time = matched_times[temp_diffs.index(min(temp_diffs))]
+
+    max_pressure_diff_time = matched_times[pressure_diffs.index(max(pressure_diffs))]
+    min_pressure_diff_time = matched_times[pressure_diffs.index(min(pressure_diffs))]
+
+    # Resultater
+    print(f"Gjennomsnittlig temperaturforskjell: {average_temp_diff:.2f}")
+    print(f"Gjennomsnittlig trykkforskjell: {average_pressure_diff:.2f}")
+
+    print(f"Størst temperaturforskjell ved {max_temp_diff_time}: {max(temp_diffs):.2f}")
+    print(f"Minst temperaturforskjell ved {min_temp_diff_time}: {min(temp_diffs):.2f}")
+
+    print(f"Størst trykkforskjell ved {max_pressure_diff_time}: {max(pressure_diffs):.2f}")
+    print(f"Minst trykkforskjell ved {min_pressure_diff_time}: {min(pressure_diffs):.2f}")
 
 
 def plot_std():
-    std_time, std_temps = calculate_moving_std(avg_times, avg_temps , 30)
-
-    plt.errorbar(std_time, std_temps, yerr=std_temps, errorevery=100, capsize=3, label="Temperature with Std Dev")
+    plt.subplots(1, 1, figsize=(12, 8))
+    rune_std_time, rune_std_temps = calculate_moving_std(rune_avg_dt, rune_avg_temps , 30)
+    plt.errorbar(rune_std_time, rune_std_temps, yerr=rune_std_temps, errorevery=100, capsize=0, label="Temperature with Std Dev")
     plt.xlabel("Date-time")
-    plt.ylabel("Temperatur STD")
+    plt.ylabel("Temp STD")
     plt.title("Temperatur Standardavvik")
-    plt.legend()
+
     plt.show()
 
 
 def plot_data():
-
     figure, axis = plt.subplots(2, 1, figsize=(12, 8))
-    #Todo
+
+    # Todo
     axis[0].plot(sola_dt, sola_temp, label='Temperature MET', color='green')
     axis[0].plot(rune_temp_dt[:len(rune_temp_list)], rune_temp_list, label="Temperatur", color="blue")
-    axis[0].plot(avg_times, avg_temps, label='Gjennomsnittt temperatur', color='orange')
-
+    axis[0].plot(rune_avg_dt, rune_avg_temps , label='Gjennomsnittt temperatur', color='orange')
     axis[0].plot(rune_max_temp_fall_dt, rune_max_temp_fall_list, label='Temperatur fall', color='purple')
-
     axis[0].plot(sola_max_temp_fall_dt, sola_max_temp_fall_list, label='Temperatur fall sola', color='black')
+    axis[0].plot(sirdal_dt_temp, sirdal_temp, label="Temperatur sirdal", color="red")
+    axis[0].plot(sauda_dt, sauda_temp_list, label="Temperatur sauda", color="pink")
 
     axis[0].legend()
     axis[0].grid(False)
@@ -92,6 +144,8 @@ def plot_data():
     axis[1].plot(rune_bar_dt[::6], rune_bar_pressure[:-1], label='Trykk Barometer', color='orange')
     axis[1].plot(sola_dt, sola_pressure, label='Absolutt Trykk MET', color='green')
     axis[1].plot(rune_abs_dt, rune_abs_pressure, label="Trykk absolute", color="blue")
+    axis[1].plot(sirdal_dt, sirdal_pressure, label="Trykk sirdal", color="red")
+    axis[1].plot(sauda_dt_trykk, sauda_trykk, label="Trykk sauda", color="pink")
 
     axis[1].legend()
     axis[1].grid(False)
@@ -101,5 +155,28 @@ def plot_data():
     plt.show()
 
 
+def plot_histogrammene():
+    _, sola_temp = sola_processor.get_temperatures()
+    _, rune_temp_list = rune_processor.get_temperatures()
+
+    fig, axs = plt.subplots(1, 2, figsize=(12, 5))
+
+    axs[0].hist(sola_temp, bins=range(int(min(sola_temp)), int(max(sola_temp)) + 1), color='pink')
+    axs[0].set_title('Temperaturer, Sola')
+    axs[0].set_xlabel('Temperatur')
+
+
+    axs[1].hist(rune_temp_list, bins=range(int(min(rune_temp_list)), int(max(rune_temp_list)) + 1), color='purple')
+    axs[1].set_title('Temperaturer, Rune')
+    axs[1].set_xlabel('Temperatur')
+
+
+    plt.tight_layout()
+    plt.show()
+
+plot_data()
+plot_histogrammene()
+diff_resultat()
 plot_std()
+
 

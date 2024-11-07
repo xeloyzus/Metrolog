@@ -80,8 +80,8 @@ class RuneMetroDataProcessor:
                 #print(f"Time: {date_time_obj.strftime('%Y-%d-%m %H:%M')}, Temperature: {temp_val}")
 
     def max_min_temp_fall(self):
-        start_date = datetime(2021, 6, 11, 17, 31)
-        end_date = datetime(2021, 6, 12, 3, 5)
+        start_date = datetime(2021, 6, 11, 17,31)
+        end_date = datetime(2021, 6, 12, 3,5)
         for date_time_obj, temp_val in zip(self.date_time_list, self.temp_list):
             # Check if the date matches the start or end date
             if date_time_obj == start_date or date_time_obj == end_date:
@@ -94,7 +94,6 @@ class RuneMetroDataProcessor:
         return self.temp_fall_datetime_list,self.temp_fall_list
 
     def get_max_min_tempfall(self):
-
         return self.max_min_dates,self.max_min_temps
 
     def get_temperatures(self):
@@ -108,4 +107,3 @@ class RuneMetroDataProcessor:
     def get_pressures_bar(self):
         """Returns the list of pressures."""
         return self.date_time_list, self.pressure_barometer_list
-
