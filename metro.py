@@ -34,7 +34,7 @@ def calculate_moving_average(date_time, data, n):
         avg_times.append(date_time[i])  # Only append valid times (those that won't go out of bounds)
         avg_data.append(np.mean(data[i - n:i + n + 1]))  # Calculate the mean for n previous, current, and n next
 
-    return avg_data, avg_temps
+    return avg_times, avg_data
 
 
 # Function to calculate the moving standard deviation with sample adjustment
@@ -101,5 +101,5 @@ def plot_data():
     plt.show()
 
 
-plot_data()
+plot_std()
 
