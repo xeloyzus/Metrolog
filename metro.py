@@ -174,9 +174,57 @@ def plot_histogrammene():
     plt.tight_layout()
     plt.show()
 
+def diff_moving_average(data, n=10):
+    smoothed_data = []
+    for i in range(n, len(data) - n):
+        window_average = np.mean(data[i - n:i + n + 1])
+        smoothed_data.append(window_average)
+    return smoothed_data
+
+
+def trykk_diff():
+
+    # dict mapping av date time og  trykk
+    bar_pressure_dict = dict(zip(rune_bar_dt, rune_bar_pressure))
+    abs_pressure_dict = dict(zip(rune_abs_dt, rune_abs_pressure))
+
+    samtide_trykk = sorted(set(rune_bar_dt).intersection(rune_abs_dt))
+
+    like_dt = []
+    like_bar_pressure = []
+    like_abs_pressure = []
+
+    for time in samtide_trykk:
+        # Check if the time exists in both dictionaries
+        if time in bar_pressure_dict and time in abs_pressure_dict:
+            like_dt.append(time)
+            like_bar_pressure.append(bar_pressure_dict[time])
+            like_abs_pressure.append(abs_pressure_dict[time])
+
+    # Finn differanse mellom  abs and bar trykk
+    pressure_diff = np.array(like_abs_pressure) - np.array(like_bar_pressure)
+
+    # pressure_diff = np.array(like_bar_pressure) - np.array(like_abs_pressure)
+
+    # Apply the moving average function to the difference
+    avg_trykk_diff = diff_moving_average(pressure_diff)
+
+    # Plot the smoothed pressure difference
+    plt.figure(figsize=(12, 6))
+    plt.plot(like_dt[10:-10], avg_trykk_diff, label=" Trykk Differanse", color="blue")
+    plt.xlabel("Date-Time")
+    plt.ylabel("Trykk Differanse (Absolute - Barometrisk)")
+    plt.title("Diff mellom Abs and Bar Trykk")
+    plt.legend()
+    plt.grid(True)
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
 plot_data()
 plot_histogrammene()
 diff_resultat()
 plot_std()
+trykk_diff()
+
 
 
