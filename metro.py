@@ -214,7 +214,7 @@ def trykk_diff():
     plt.plot(like_dt[10:-10], avg_trykk_diff, label=" Trykk Differanse", color="blue")
     plt.xlabel("Date-Time")
     plt.ylabel("Trykk Differanse (Absolutt - Barometrisk)")
-    plt.title("Diff mellom Abs and Bar Trykk")
+    plt.title("Diff mellom Abs og Bar Trykk")
     plt.legend()
     plt.grid(True)
     plt.xticks(rotation=45)
