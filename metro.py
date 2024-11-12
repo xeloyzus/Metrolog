@@ -188,13 +188,13 @@ def trykk_diff():
     bar_pressure_dict = dict(zip(rune_bar_dt, rune_bar_pressure))
     abs_pressure_dict = dict(zip(rune_abs_dt, rune_abs_pressure))
 
-    samtide_trykk = sorted(set(rune_bar_dt).intersection(rune_abs_dt))
+    samtide_tid = sorted(set(rune_bar_dt).intersection(rune_abs_dt))
 
     like_dt = []
     like_bar_pressure = []
     like_abs_pressure = []
 
-    for time in samtide_trykk:
+    for time in samtide_tid:
         # Check if the time exists in both dictionaries
         if time in bar_pressure_dict and time in abs_pressure_dict:
             like_dt.append(time)
